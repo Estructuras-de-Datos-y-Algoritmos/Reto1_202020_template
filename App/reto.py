@@ -160,18 +160,20 @@ def requerimiento_2(option,masomenos, list, number,ascendente):
                 tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
                 lt.addFirst (ascendente_vote, tuple1)
             size= lt.size(ascendente_vote)
-            for i in range(0,size):
+            for i in range(0,(size+1)):
                 element= lt.getElement(ascendente_vote,i)
-                lista_final.append(element)
+                if element not in lista_final :
+                    lista_final.append(element)
             return lista_final
         elif ascendente == 0 :
             for k in range (1, number+1):
                 tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
                 lt.addLast(descendente_vote, tuple1)
             size= lt.size(descendente_vote)
-            for i in range(0,size):
+            for i in range(0,(size+1)):
                 element= lt.getElement(descendente_vote,i)
-                lista_final.append(element)
+                if element not in lista_final :
+                    lista_final.append(element)
             return lista_final
         else:
             print('Tipo de ordenamiento no valido')
@@ -183,17 +185,20 @@ def requerimiento_2(option,masomenos, list, number,ascendente):
                 tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
                 lt.addFirst (ascendente_vote, tuple1)
             size= lt.size(ascendente_vote)
-            for i in range(0,size):
+            for i in range(0,(size+1)):
                 element= lt.getElement(ascendente_vote,i)
-                lista_final.append(element)
+                if element not in lista_final :
+                    lista_final.append(element)
             return lista_final
         elif ascendente == 0 :
             for k in range (inf, si):
                 tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
                 lt.addLast(descendente_vote, tuple1)
-            for i in range(0,size):
+            size= lt.size(descendente_vote)
+            for i in range(0,(size+1)):
                 element= lt.getElement(descendente_vote,i)
-                lista_final.append(element)
+                if element not in lista_final :
+                    lista_final.append(element)
             return lista_final
         else:
             print('Tipo de ordenamiento no valido')
@@ -202,7 +207,7 @@ def requerimiento_2(option,masomenos, list, number,ascendente):
 
 
 #Requerimiento 6. Crear Ranking del género
-"""
+
 def promedios_genero(lista,genero_buscado):
     #pasamos el str buscado a minusculas, y eliminamos cualquier caracter que pueda generar errores en la búsqueda
     genero_buscado=(((genero_buscado.lower()).replace(" ","")).replace("-","")).replace("y","")
@@ -248,7 +253,7 @@ def ranking_genero_average(number,lista,genero_buscado):
         lt.addFirst(lista_mejores_calificadas_ascendente, tupla1)
         lt.addLast(lista_mejores_calificadas_descendente,tupla1)
     return(lista_mejores_calificadas_ascendente, lista_mejores_calificadas_descendente)
-"""
+
 
 #MENU
 def main():
@@ -327,5 +332,3 @@ def main():
                 
 if __name__ == "__main__":
     main()
-
-    
