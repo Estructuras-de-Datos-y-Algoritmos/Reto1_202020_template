@@ -362,7 +362,7 @@ def main():
             elif int(inputs[0])==4: #opcion 4
                 dir= input('Ingrese el nombre del Director: ')
 
-                peliculas_de_un_director(lst_movies_array_list,dir)
+                peliculas_de_un_director(lst_movies_single_linked,dir)
 
             elif int(inputs[0])==5: #opcion 5
                 pass
