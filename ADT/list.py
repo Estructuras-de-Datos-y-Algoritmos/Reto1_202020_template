@@ -21,7 +21,7 @@
 import config
 from Utils import error as error
 from DataStructures import liststructure as lt
-
+from Sorting import mergesort as mer 
 
 """
   Este módulo implementa el tipo abstracto de datos (TAD) lista. 
@@ -342,4 +342,5 @@ def subList (lst, pos, numelem):
     except Exception as exp:
         error.reraise (exp, 'List->subList: ')
 
-
+def tad_merge(lst,lessfunction):
+    mer.mergesort(lst, lessfunction)

@@ -1,3 +1,4 @@
+
 """
  * Copyright 2020, Departamento de sistemas y Computación, Universidad de Los Andes
  * 
@@ -31,7 +32,6 @@ import sys
 import csv
 from ADT import list as lt
 from DataStructures import listiterator as it
-from Sorting import mergesort as sort
 from time import process_time 
 
 
@@ -42,10 +42,12 @@ def printMenu():
     """
     print("\nBienvenido")
     print("1- Cargar Datos")
-    print("2- Ranking de peliculas")
-    print("3- Conocer un director")
-    print("4- Conocer un actor")
-    print("5- Entender un genero")
+    print("2- Mejores peliculas de un director")#requerimiento 1
+    print("3- Crear ranking de peliculas")#requerimiento 2
+    print("4- Conocer un director") #requerimiento 3
+    print("5- Conocer un actor")#requerimiento 4
+    print('6- Entender un genero')#requerimiento 5
+    print("7- Ranking del Genero")#requerimiento 6
     print("0- Salir")
 
 
@@ -84,7 +86,7 @@ def get_two_csv(file1,file2,list_type):
     return lst_movies
 
 #ESTA ES LA FUNCIÓN PARA LA BÚSQUEDAD DEL DIRECTOR Y DE SUS PELÍCULAS BUENAS
-#REQUERIMIENTO 1
+#REQUERIMIENTO 1 #opcion 2 del menu
 
 def good_movies(lista,busqueda):
 #La x mas votadas
@@ -101,7 +103,7 @@ def good_movies(lista,busqueda):
                     count+=1
                     sum+= vote
             recorrido+=1
-        return((count,sum/count))
+        return((count,round((sum/count),2)))
     except:
         print("El director no fue encontrado")
     
@@ -125,10 +127,10 @@ def peliculas_de_un_director(list,director_name):
     else: 
         print('El director no esta en la lista, Intente nuevamente')
 
-###
-# la referenciacion [0] pertenece al casting de las peliculas y [1] a los detalles de las mismas.
+
+
 #Funciones para requerimiento 2
-###
+
 def comparar_vote_count (movie1, movie2):
     return ( float(movie1[1]["vote_count"]) > float(movie2[1]["vote_count"]))
 
@@ -137,89 +139,72 @@ def comparar_vote_average (movie1, movie2):
 
 
 def lista_ordenada_vote_count(list):
-    sort.mergesort (list,comparar_vote_count)
+    lt.tad_merge(list,comparar_vote_count)
+    return list
 
-def lista_ordenada_vote_average(list):    
-    sort.mergesort(list,comparar_vote_average)
 
-def requerimiento_2(option,masomenos, list, number,ascendente):
-    var= 'vote_count'
-    if option == 0 : ## vote average
-        lista_ordenada_vote_average(list)
-        var= 'vote_average'
-    elif option == 1 : ## count
-        lista_ordenada_vote_count(list)
-    movies= list
-    ascendente_vote= lt.newList()
-    descendente_vote= lt.newList()
-    lista_final= []
-    if masomenos == 1 :  #### Las mas votadas ya sea ascendente o descendente.
+def obtener_peliculas_mas_votadas (list, number):
+    movies = lista_ordenada_vote_count(list)
+    peliculas_mas_votadas_ascendente= lt.newList("ARRAY_LIST")
+    peliculas_mas_votadas_descendente= lt.newList("ARRAY_LIST")
+    for cont in range (1, number+1):
+        tuple1=("Id: ",lt.getElement (movies, cont)[0]["id"],"Title: ",lt.getElement (movies, cont)[1]["original_title"],"Vote_Count: ",lt.getElement (movies, cont)[1]["vote_count"]  )
+        lt.addFirst (peliculas_mas_votadas_ascendente, tuple1)
+        lt.addLast (peliculas_mas_votadas_descendente, tuple1)
+    return (peliculas_mas_votadas_descendente["elements"],peliculas_mas_votadas_ascendente["elements"])
 
-        if ascendente == 1 :
-            for k in range (1, number+1):
-                tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
-                lt.addFirst (ascendente_vote, tuple1)
-            size= lt.size(ascendente_vote)
-            for i in range(0,(size+1)):
-                element= lt.getElement(ascendente_vote,i)
-                if element not in lista_final :
-                    lista_final.append(element)
-            return lista_final
-        elif ascendente == 0 :
-            for k in range (1, number+1):
-                tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
-                lt.addLast(descendente_vote, tuple1)
-            size= lt.size(descendente_vote)
-            for i in range(0,(size+1)):
-                element= lt.getElement(descendente_vote,i)
-                if element not in lista_final :
-                    lista_final.append(element)
-            return lista_final
-        else:
-            print('Tipo de ordenamiento no valido')
-    elif masomenos == 0 : ####Menos votadas ya sea ascendente o descendente.
-        si= lt.size(movies)
-        inf= si - number
-        if ascendente == 1 :
-            for k in range (inf,si):
-                tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
-                lt.addFirst (ascendente_vote, tuple1)
-            size= lt.size(ascendente_vote)
-            for i in range(0,(size+1)):
-                element= lt.getElement(ascendente_vote,i)
-                if element not in lista_final :
-                    lista_final.append(element)
-            return lista_final
-        elif ascendente == 0 :
-            for k in range (inf, si):
-                tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],var,lt.getElement (movies, k)[1][var]  )
-                lt.addLast(descendente_vote, tuple1)
-            size= lt.size(descendente_vote)
-            for i in range(0,(size+1)):
-                element= lt.getElement(descendente_vote,i)
-                if element not in lista_final :
-                    lista_final.append(element)
-            return lista_final
-        else:
-            print('Tipo de ordenamiento no valido')
-    else :
-        print('Syntax Error')
+def obtener_peliculas_menos_votadas (list, number):
+    movies = lista_ordenada_vote_count(list)
+    peliculas_menos_votadas_ascendente= lt.newList("ARRAY_LIST")
+    peliculas_menos_votadas_descendente= lt.newList("ARRAY_LIST")
+    si= int(lt.size(movies))
+    inf= si - number
+    for k in range (inf+1, si+1):
+        tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],"Vote_Count: ",lt.getElement (movies, k)[1]["vote_count"]  )
+        lt.addLast (peliculas_menos_votadas_descendente, tuple1)
+        lt.addFirst (peliculas_menos_votadas_ascendente, tuple1)
+        
+    return (peliculas_menos_votadas_descendente["elements"],peliculas_menos_votadas_ascendente["elements"])
 
+def lista_ordenada_vote_average(list):
+    lt.tad_merge(list,comparar_vote_average)
+    return list
+
+
+def obtener_peliculas_mejor_votadas (list, number):
+    movies = lista_ordenada_vote_average(list)
+    peliculas_mejores_calificaciones_ascendente= lt.newList("ARRAY_LIST")
+    peliculas_mejores_calificaciones_descendente= lt.newList("ARRAY_LIST")
+    for cont in range (1, number+1):
+        tuple1=("Id: ",lt.getElement (movies, cont)[0]["id"],"Title: ",lt.getElement (movies, cont)[1]["original_title"],"Vote_Average: ",lt.getElement (movies, cont)[1]["vote_average"]  )
+        lt.addFirst (peliculas_mejores_calificaciones_ascendente, tuple1)
+        lt.addLast (peliculas_mejores_calificaciones_descendente, tuple1)
+    return (peliculas_mejores_calificaciones_descendente["elements"],peliculas_mejores_calificaciones_ascendente["elements"])
+
+def obtener_peliculas_peor_votadas (list, number):
+    movies = lista_ordenada_vote_average(list)
+    peliculas_peor_calificadas_ascendente= lt.newList("ARRAY_LIST")
+    peliculas_peor_calificadas_descendente= lt.newList("ARRAY_LIST")
+    si= int(lt.size(movies))
+    inf= si - number
+    for k in range (inf+1, si+1):
+        tuple1=("Id: ",lt.getElement (movies, k)[0]["id"],"Title: ",lt.getElement (movies, k)[1]["original_title"],"Vote_Average: ",lt.getElement (movies, k)[1]["vote_average"]  )
+        lt.addLast (peliculas_peor_calificadas_descendente, tuple1)
+        lt.addFirst (peliculas_peor_calificadas_ascendente, tuple1)
+    return (peliculas_peor_calificadas_descendente["elements"],peliculas_peor_calificadas_ascendente["elements"])
 
 #Requerimiento 6. Crear Ranking del género
+#1. Buscamos todas las películas de un genero
 
 def promedios_genero(lista,genero_buscado):
     #pasamos el str buscado a minusculas, y eliminamos cualquier caracter que pueda generar errores en la búsqueda
-    genero_buscado=(((genero_buscado.lower()).replace(" ","")).replace("-","")).replace("y","")
+    genero_buscado=(((genero_buscado.lower()).replace(" ","")).replace("-",""))
     promedio_votos=0
     promedio_puntaje=0
     peliculas_de_un_genero= lt.newList()
-    peliculas_del_genero_vote_avarenge=lt.newList()
-    peliculas_del_genero_vote_count=lt.newList()
-    
     recorrido = 0
 
-    while recorrido <= lt.size(lista):
+    while recorrido <= int(lt.size(lista)):
         elemento=lt.getElement(lista,recorrido)
         genero_comparado= ((str(elemento[1]["genres"]).replace("|","")).lower()).replace(" ","")
         if  genero_comparado == genero_buscado:
@@ -233,28 +218,73 @@ def promedios_genero(lista,genero_buscado):
     promedio_votos=promedio_votos/size
     promedio_puntaje=promedio_puntaje/size
     
+    return (peliculas_de_un_genero, round(promedio_votos,2), round(promedio_puntaje,2),size)
     
-    sort.mergesort(peliculas_del_genero_vote_count,comparar_vote_count)
-    return (peliculas_de_un_genero, promedio_votos, promedio_puntaje,size)
-    
+# Ordenar la lista por puntuación
+def ordenar_peliculas_genero_vote_average(lista,genero_buscado):
+    lista_genero= promedios_genero(lista,genero_buscado)[0]
+    lt.tad_merge(lista_genero,comparar_vote_average)
+    return lista_genero
+
+def ranking_las_mejor_votadas_del_genero(lista,genero_buscado,number):
+    lista_ordenada_vote_average_genero= ordenar_peliculas_genero_vote_average(lista,genero_buscado)
+    mejor_votadas_del_genero_ascendente=lt.newList("ARRAY_LIST")
+    mejor_votadas_del_genero_descendente=lt.newList("ARRAY_LIST")
+    for k in range(1, number+1):
+        element=lt.getElement(lista_ordenada_vote_average_genero,k)
+        tuple1=("Titulo:",element[1]["original_title"], "Vote Average: ",element[1]["vote_average"], "Genero: ",element[1]["genres"])
+        lt.addFirst(mejor_votadas_del_genero_ascendente,tuple1)
+        lt.addLast(mejor_votadas_del_genero_descendente,tuple1)
+    return (mejor_votadas_del_genero_ascendente["elements"],mejor_votadas_del_genero_descendente["elements"])
+
+def ranking_las_peor_votadas_del_genero(lista,genero_buscado,number):
+    lista_ordenada_vote_average_genero= ordenar_peliculas_genero_vote_average(lista,genero_buscado)
+    peor_votadas_del_genero_ascendente=lt.newList("ARRAY_LIST")
+    peor_votadas_del_genero_descendente=lt.newList("ARRAY_LIST")
+    si= int(lt.size(lista_ordenada_vote_average_genero))
+    inf= si-number
+    for k in range(inf+1, si+1):
+        element=lt.getElement(lista_ordenada_vote_average_genero,k)
+        tuple1=("Titulo:",element[1]["original_title"], "Vote Average: ",element[1]["vote_average"], "Genero: ",element[1]["genres"])
+        lt.addFirst(peor_votadas_del_genero_descendente,tuple1)
+        lt.addLast(peor_votadas_del_genero_ascendente,tuple1)
+    return (peor_votadas_del_genero_ascendente["elements"],peor_votadas_del_genero_descendente["elements"])
+
+#Ordenar la lista por votacion
+def ordenar_peliculas_genero_vote_count(lista,genero_buscado):
+    lista_genero= promedios_genero(lista,genero_buscado)[0]
+    lt.tad_merge(lista_genero,comparar_vote_count)
+    return lista_genero
+
+def ranking_las_mas_votadas_del_genero(lista,genero_buscado,number):
+    lista_ordenada_vote_count_genero= ordenar_peliculas_genero_vote_count(lista,genero_buscado)
+    mas_votadas_del_genero_ascendente=lt.newList("ARRAY_LIST")
+    mas_votadas_del_genero_descendente=lt.newList("ARRAY_LIST")
+    for k in range(1, number+1):
+        element=lt.getElement(lista_ordenada_vote_count_genero,k)
+        tuple1=("Titulo:",element[1]["original_title"], "Vote Count: ",element[1]["vote_count"], "Genero: ",element[1]["genres"])
+        lt.addFirst(mas_votadas_del_genero_ascendente,tuple1)
+        lt.addLast(mas_votadas_del_genero_descendente,tuple1)
+    return (mas_votadas_del_genero_ascendente["elements"],mas_votadas_del_genero_descendente["elements"])
+
+def ranking_las_menos_votadas_del_genero(lista,genero_buscado,number):
+    lista_ordenada_vote_count_genero= ordenar_peliculas_genero_vote_count(lista,genero_buscado)
+    menos_votadas_del_genero_ascendente=lt.newList("ARRAY_LIST")
+    menos_votadas_del_genero_descendente=lt.newList("ARRAY_LIST")
+    si= int(lt.size(lista_ordenada_vote_count_genero))
+    inf= si-number
+    for k in range(inf+1, si+1):
+        element=lt.getElement(lista_ordenada_vote_count_genero,k)
+        tuple1=("Titulo:",element[1]["original_title"], "Vote Count: ",element[1]["vote_count"], "Genero: ",element[1]["genres"])
+        lt.addFirst(menos_votadas_del_genero_descendente,tuple1)
+        lt.addLast(menos_votadas_del_genero_ascendente,tuple1)
+    return (menos_votadas_del_genero_ascendente["elements"],menos_votadas_del_genero_descendente["elements"])
+
+# Ordenar la lista por votacion
     
 
 
-def ranking_genero_average(number,lista,genero_buscado):
-    peliculas_de_un_genero=promedios_genero(lista,genero_buscado)
-    lista_ordenada_vote_average = lt.newList
-    
-    lista_mejores_calificadas_ascendente=lt.newList()
-    lista_mejores_calificadas_descendente=lt.newList()
-    recorrido=0
-    while recorrido <= int(lt.size(lista_ordenada_vote_average)):
-        elemento=lt.getElement(lista_ordenada_vote_average,recorrido)[1]
-        tupla1= ("Titulo: ",elemento["original_title"], "Vote_Average: ", elemento["vote_average"], "Genero: ", elemento["genres"])
-        lt.addFirst(lista_mejores_calificadas_ascendente, tupla1)
-        lt.addLast(lista_mejores_calificadas_descendente,tupla1)
-    return(lista_mejores_calificadas_ascendente, lista_mejores_calificadas_descendente)
-
-
+#sort.mergesort(peliculas_del_genero_vote_count,comparar_vote_count)
 #MENU
 def main():
     """
@@ -281,51 +311,95 @@ def main():
                 print("Datos cargados, " + str(lt.size(lst_movies_single_linked)) + " elementos cargados")
 
             elif int(inputs[0])==2: #opcion 2
-                pass
-                num1= int(input('Ingrese el numero de peliculas para el ranking de segun la cantidad de votos : '))
-                masomenos1= int(input('Ingrese 1 si desea obtener las mas votadas, o ingrese 0 si desea las menos votadas : '))
-                ascen1= int(input('Si quiere obtener las peliculas del ranking vote count en orden ascendente ingrese 1, para descendente ingrese 0 : '))
-                num2= int(input('Ingrese el numero de peliculas para el ranking de segun el promedio de los votos : '))
-                masomenos2= int(input('Ingrese 1 si desea las peliculas con mejor promedio, o ingrese 0 si desea las de peor promedio : '))
-                ascen2= int(input('Si quiere obtener las peliculas del ranking vote average en orden ascendente ingrese 1, para descendente ingrese 0 : '))
-                with_count= requerimiento_2(1,masomenos1,lst_movies_single_linked,num1,ascen1)
-                with_average= requerimiento_2(0,masomenos2,lst_movies_single_linked,num2,ascen2)
-                print('El ranking de vote count solicitado es :')
-                print(with_count)
-                print('El ranking de vote average solicitado es :')
-                print(with_average)
+                
+                dir= input('Ingrese el nombre del Director: ')
+                peliculas= good_movies(lst_movies_array_list,dir)
+                print("De el director "+ dir + " se encontraron " + str(peliculas[0]) + " peliculas buenas. El promedio de la puntuación de estas películas es: " + str(peliculas[1]))
 
             elif int(inputs[0])==3: #opcion 3
-                pass
-                dir= input('Ingrese el nombre del Director: ')
+                    print("1 -Ver películas más votadas en orden descendente")
+                    print("2- Ver películas más votadas en orden ascendente")
+                    print("3- Ver películas menos votadas en orden descendente")
+                    print("4- Ver películas menos votadas en orden ascendente")
+                    print("5- Ver películas mejor votadas en orden descendente")
+                    print("6- Ver películas mejor votadas en orden ascendente")
+                    print("7- Ver películas peor votadas en orden descendente")
+                    print("8- Ver películas peor votadas en orden ascendente")
+                    print("9- Volver a menú principal")
 
-                peliculas_de_un_director(lst_movies_array_list,dir)
+                    inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
+                    if len(inputs)>0:
+                        if int(inputs[0])==1: 
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas más votadas en orden descendente son:\n " + str(obtener_peliculas_mas_votadas(lst_movies_single_linked,number)[0] )  )
+                        elif int(inputs[0])==2:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas más votadas en orden ascendente son:\n " + str(obtener_peliculas_mas_votadas(lst_movies_single_linked,number)[1] )  )
+                        elif int(inputs[0])==3:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas menos votadas en orden descendente son:\n " + str(obtener_peliculas_menos_votadas(lst_movies_single_linked,number)[0] ))
+                        elif int(inputs[0])==4: 
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas menos votadas en orden ascendente son:\n " + str(obtener_peliculas_menos_votadas(lst_movies_single_linked,number)[1] )  )
+                        elif int(inputs[0])==5:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas mejor calificadas en orden descendente son:\n " + str(obtener_peliculas_mejor_votadas(lst_movies_single_linked,number)[0] ))
+                        elif int(inputs[0])==6:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas mejor calificadas en orden ascendente son:\n " + str(obtener_peliculas_mejor_votadas(lst_movies_single_linked,number)[1] )  )
+                        elif int(inputs[0])==7:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas peor calificadas en orden descendente son:\n " + str(obtener_peliculas_peor_votadas(lst_movies_single_linked,number)[0] ))
+                        elif int(inputs[0])==8:
+                            number=int(input("Ingrese el número de peliculas que desea ver en el ranking: \n"))
+                            print("Las películas peor calificadas en orden ascendente son:\n " + str(obtener_peliculas_peor_votadas(lst_movies_single_linked,number)[1] )  )
+                        elif int(inputs[0])==9:       
+                            printMenu() #imprimir el menu de opciones en consola
+                            inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
+
                 
 
             elif int(inputs[0])==4: #opcion 4
-                pass
+                dir= input('Ingrese el nombre del Director: ')
+
+                peliculas_de_un_director(lst_movies_array_list,dir)
 
             elif int(inputs[0])==5: #opcion 5
-              """  genero_buscado= input("Ingrese el género que desea consultar: ")
-                lista_promedios_genero=promedios_genero(lst_movies_single_linked,genero_buscado)
-                
-                print("Se encontraron " + str(promedios_genero(lst_movies_single_linked,genero_buscado)[4]) +" peliculas del género " + genero_buscado + ". Este género tiene un promedio de votación de " + str(promedios_genero(lst_movies_single_linked,genero_buscado)[2]) + " y un promedio de puntuacion de " + str(promedios_genero(lst_movies_single_linked,genero_buscado)[3]))
+                pass
 
+
+            elif int(inputs[0])==6: #opcion 6
+                genero_buscado= input("Ingrese el género que desea consultar: ")
+                datos_genero=promedios_genero(lst_movies_single_linked,genero_buscado)
+                print("Se encontraron " + str(datos_genero[3]) +" peliculas del género " + genero_buscado + ". Este género tiene un promedio de votación de " + str(datos_genero[1]) + " y un promedio de puntuacion de " + str(datos_genero[2]))
+
+
+            elif int(inputs[0])==7: #opcion 7
+                genre= input(' Ingrese el genero para el cual desea crear el ranking: ')
                 print(" Lista de rankings ofrecidos de este género: \n 1. Lista de las peliculas mejor calificadas. \n 2. Lista de peliculas peor calificadas.")
                 print(" 3. Lista de peliculas más votadas. \n 4. Lista de peliculas menos votadas")
                 ranking_deseado=int(input("Ingrese el ranking que desea consultar: "))
                 number= int(input("Ingrese el número de peliculas que desea ver en el ranking: "))
                 if ranking_deseado == 1:
-                    mejores_calificadas=ranking_genero_average(number,lst_movies_single_linked,genero_buscado)
-                   # print("Las peliculas del genero " + genero_buscado + "ordenadas de manera ascendente son: "+ str(mejores_calificadas[0]))
-                    #print("Las peliculas del genero " + genero_buscado + "ordenadas de manera descendente son: "+ str(mejores_calificadas[1]))
+                    las_mejor_votadas_del_genero= ranking_las_mejor_votadas_del_genero(lst_movies_single_linked ,genre,number)
+                    print("Las peliculas mejor votadas del genero " + genre + " ordenadas de manera ascendente son: "+ str(las_mejor_votadas_del_genero[0]))
+                    print("Las peliculas mejor votadas del genero " + genre + " ordenadas de manera descendente son: "+ str(las_mejor_votadas_del_genero[1]))
+
+                elif ranking_deseado ==2:
+                    las_peor_votadas_del_genero= ranking_las_peor_votadas_del_genero(lst_movies_single_linked ,genero_buscado,number)
+                    print("Las peliculas peor votadas del genero " + genre + " ordenadas de manera ascendente son: "+ str(las_peor_votadas_del_genero[0]))
+                    print("Las peliculas peor votadas del genero " + genre + " ordenadas de manera descendente son: "+ str(las_peor_votadas_del_genero[1]))
 
 
-
-                #elif ranking_deseado ==2:
-                #elif ranking_deseado == 3:
-               # elif ranking_deseado ==4:
-                    """
+                elif ranking_deseado == 3:
+                    las_mas_votadas_del_genero= ranking_las_mas_votadas_del_genero(lst_movies_single_linked ,genero_buscado,number)
+                    print("Las peliculas mas votadas del genero " + genre + " ordenadas de manera ascendente son: "+ str(las_mas_votadas_del_genero[0]))
+                    print("Las peliculas mas votadas del genero " + genre + " ordenadas de manera descendente son: "+ str(las_mas_votadas_del_genero[1]))
+                elif ranking_deseado ==4:
+                    las_menos_votadas_del_genero= ranking_las_menos_votadas_del_genero(lst_movies_single_linked ,genero_buscado,number)
+                    print("Las peliculas menos votadas del genero " + genre + " ordenadas de manera ascendente son: "+ str(las_menos_votadas_del_genero[0]))
+                    print("Las peliculas menos votadas del genero " + genre + " ordenadas de manera descendente son: "+ str(las_menos_votadas_del_genero[1]))
+                    
 
             elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
