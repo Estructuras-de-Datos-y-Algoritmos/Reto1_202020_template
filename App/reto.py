@@ -132,32 +132,41 @@ def conocer_un_actor(nombre_actor, list):
     tam = lt.size(list)
     cantidad = 0
     participaciones = []
+    mas_participacion= {}
     puntaje = 0
-    otra = []
-    nueva = []
     for f in range(1, tam):
-        for i in range(0, 5):
+        for i in range(1, 6):
             act = "actor" + str(i) + "_name"
-            if list[f][act] == nombre_actor:
-                participaciones.append(list[f]["original_title"])
-                otra.append(list[f])
+            element= lt.getElement(list,f)
+            titulo= element[1]["original_title"]
+            if element[0][act] == nombre_actor and titulo not in participaciones:
+                participaciones.append(titulo)
                 cantidad += 1
-                puntaje += list[f]["vote_average"]
-    for t in range(0, len(otra)):
-        nueva.append(otra[t]["director_name"])
-    for m in range(0, len(nueva)):
-        for n in range(1, len(nueva)):
-            mayor = nueva[i]
-            a= nueva.count(otra[m])
-            b = nueva.count(otra[n])
-            if a > b: 
-                mayor= nueva[f]
+                puntaje += float(element[1]["vote_average"])
+                if element[0]['director_name'] not in mas_participacion:
+                    mas_participacion[element[0]['director_name']]= 0
+                mas_participacion[element[0]['director_name']]+=1
+                break
+
+    count= 0
+    mayor= None
+    director= None
+    for i in mas_participacion.keys() :  
+        if count == 0:
+            mayor= mas_participacion[i]
+            director= i
+        elif mas_participacion[i] > mayor :
+            mayor= mas_participacion[i]
+            director= i
+        count+=1            
+
     if cantidad >= 1:
         print("El actor " + nombre_actor + " ha participado en " + str(cantidad) + " películas.")
-        print("Se imprimirán a continuación los títulos de dichas películas: /n" + participaciones)
-        print("El promedio de los puntajes de dichas películas tiene un valor de" + str(puntaje/cantidad))
+        print("Se imprimirán a continuación los títulos de dichas películas: ")
+        print(participaciones)
+        print("El promedio de los puntajes de dichas películas tiene un valor de " + str(puntaje/cantidad))
         if mayor > 1:
-            print("El director con el que más ha colaborado el actor es " + str(mayor))
+            print("El director con el que más ha colaborado el actor es " + director)
         else:
             print("El actor no ha tenido más de una colaboración con algún director.")
     else:
@@ -400,6 +409,8 @@ def main():
 
             elif int(inputs[0])==5: #opcion 5
                 pass
+                actor= input('Ingrese el nombre del actor : ')
+                conocer_un_actor(actor,lst_movies_single_linked)
 
 
             elif int(inputs[0])==6: #opcion 6
