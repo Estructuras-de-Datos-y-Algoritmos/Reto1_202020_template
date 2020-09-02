@@ -164,15 +164,17 @@ def conocer_un_actor(nombre_actor, list):
         print("El actor " + nombre_actor + " ha participado en " + str(cantidad) + " películas.")
         print("Se imprimirán a continuación los títulos de dichas películas: ")
         print(participaciones)
-        print("El promedio de los puntajes de dichas películas tiene un valor de " + str(puntaje/cantidad))
+        print("El promedio de los puntajes de estas películas tiene un valor de " + str(puntaje/cantidad))
         if mayor > 1:
             print("El director con el que más ha colaborado el actor es " + director)
         else:
             print("El actor no ha tenido más de una colaboración con algún director.")
     else:
         print("El actor no ha participado en ninguna película.")
-      
+
+#############
 #Funciones para requerimiento 2
+#############
 
 def comparar_vote_count (movie1, movie2):
     return ( float(movie1[1]["vote_count"]) > float(movie2[1]["vote_count"]))
@@ -451,3 +453,4 @@ def main():
                 
 if __name__ == "__main__":
     main()
+
